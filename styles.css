@@ -1,0 +1,1148 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #0d0d0f;
+  --card-bg: #1a1a1e;
+  --card-border: #2d2d35;
+  --accent: #e8a317;
+  --accent-dim: #b8860b;
+  --glow: rgba(232, 163, 23, 0.4);
+  --text: #e8e6e3;
+  --text-muted: #9a9690;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  position: relative;
+  z-index: 0;
+}
+
+body.shake {
+  animation: screenShake 0.4s ease-out;
+}
+
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-6px, 2px); }
+  30% { transform: translate(6px, -2px); }
+  45% { transform: translate(-4px, 4px); }
+  60% { transform: translate(4px, -4px); }
+  75% { transform: translate(-2px, 2px); }
+}
+
+/* Confetti layer */
+.confetti-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 1px;
+  pointer-events: none;
+  animation: confettiFall 2s ease-out forwards;
+}
+
+@keyframes confettiFall {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) rotate(720deg) scale(0);
+  }
+}
+
+/* Rocket blast */
+.celebration-rocket {
+  position: absolute;
+  font-size: 48px;
+  z-index: 10000;
+  transition: none;
+}
+
+.celebration-rocket--flying {
+  animation: rocketFly 2.8s ease-in forwards;
+}
+
+@keyframes rocketFly {
+  0% {
+    transform: translate(0, 0) rotate(-15deg);
+    opacity: 1;
+  }
+  85% {
+    transform: translate(calc(100vw + 100px), -80px) rotate(-15deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(100vw + 150px), -100px) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+.rocket-body {
+  display: inline-block;
+  filter: drop-shadow(0 0 8px rgba(255, 200, 0, 0.8));
+}
+
+.rocket-flame {
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  width: 22px;
+  height: 10px;
+  background: linear-gradient(90deg, transparent, #ffaa00, #ff6600);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  animation: rocketFlame 0.08s ease-in-out infinite alternate;
+}
+
+.rocket-flame--2 { left: -18px; width: 18px; height: 8px; opacity: 0.85; animation-delay: 0.02s; }
+.rocket-flame--3 { left: -12px; width: 14px; height: 6px; opacity: 0.7; animation-delay: 0.04s; }
+
+@keyframes rocketFlame {
+  from { transform: translateY(-50%) scaleX(1); opacity: 1; }
+  to { transform: translateY(-50%) scaleX(1.2); opacity: 0.85; }
+}
+
+/* Fireworks */
+.firework-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: fireworkBurst 2s ease-out forwards;
+  box-shadow: 0 0 10px currentColor;
+}
+
+@keyframes fireworkBurst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0.2);
+  }
+}
+
+/* Sparklers */
+.sparkler-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffeb3b;
+  box-shadow: 0 0 8px #ffeb3b, 0 0 12px #ffc107;
+  pointer-events: none;
+  animation: sparklerOut 1.2s ease-out forwards;
+}
+
+@keyframes sparklerOut {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0);
+  }
+}
+
+/* Shooting stars */
+.shooting-star {
+  position: absolute;
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, 0.8) 30%, transparent 100%);
+  border-radius: 2px;
+  pointer-events: none;
+  transform: rotate(-35deg);
+  animation: shootingStarMove 1.5s ease-out forwards;
+  box-shadow: 0 0 12px #fff;
+}
+
+.shooting-star::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 16px #fff, 0 0 24px rgba(255, 255, 255, 0.6);
+}
+
+@keyframes shootingStarMove {
+  0% {
+    opacity: 0;
+    transform: rotate(-35deg) translateX(-50px);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(-35deg) translateX(calc(100vw + 100px));
+  }
+}
+
+/* Full-screen psychedelic vibe background */
+.vibe-visual {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+
+.vibe-visual::before,
+.vibe-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Thematic graphics layer (flames, drops, wildcat, etc.) */
+.vibe-visual__theme {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2%;
+  padding: 5%;
+}
+
+.vibe-theme-svg {
+  width: 32%;
+  max-width: 220px;
+  height: auto;
+  animation: themeFloat 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.2));
+}
+
+@keyframes themeFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.92; }
+  33% { transform: translate(3%, -2%) scale(1.02); opacity: 1; }
+  66% { transform: translate(-2%, 2%) scale(0.98); opacity: 0.95; }
+}
+
+/* Gas flames flicker */
+.vibe-theme-svg--gas .flame {
+  animation: flameFlicker 1.2s ease-in-out infinite;
+}
+
+.vibe-theme-svg--gas .flame:nth-child(2) { animation-delay: 0.2s; }
+.vibe-theme-svg--gas .flame:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes flameFlicker {
+  0%, 100% { opacity: 0.95; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.05); }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 0 24px rgba(0, 0, 0, 0.9), 0 0 48px rgba(0, 0, 0, 0.6);
+}
+
+.header__title {
+  font-family: "Bebas Neue", "Passion One", Impact, sans-serif;
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  font-weight: 900;
+  margin: 0 0 0.15rem 0;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, #fff 0%, #e8a317 25%, #ffd700 50%, #e8a317 75%, #fff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleShimmer 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(232, 163, 23, 0.6));
+}
+
+@keyframes titleShimmer {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+.subtitle,
+.header__tagline {
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 0.5rem 0;
+  font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 10px rgba(232, 163, 23, 0.5);
+}
+
+.current-vibe-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0.5rem 0 0.1rem 0;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.current-vibe-display,
+#current-vibe-name {
+  font-family: "Passion One", "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  font-weight: 900;
+  color: #ffd700;
+  margin: 0;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(232, 163, 23, 0.5);
+  letter-spacing: 0.04em;
+  animation: vibePop 0.6s ease-out;
+}
+
+.current-vibe-display.pop {
+  animation: vibePop 0.5s ease-out;
+}
+
+@keyframes vibePop {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.vibe-hype {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  margin: 0.35rem 0 0 0;
+  color: #ffaa00;
+  font-weight: 700;
+  min-height: 1.5em;
+  text-shadow: 0 0 12px rgba(255, 170, 0, 0.6);
+  animation: hypeFade 0.5s ease-out;
+}
+
+@keyframes hypeFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.main {
+  width: 100%;
+  max-width: 56rem;
+  position: relative;
+  z-index: 1;
+}
+
+.vibe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  justify-items: center;
+}
+
+.vibe-card {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 160px;
+  background: var(--card-bg);
+  border: 3px solid var(--card-border);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, filter 0.3s ease;
+  padding: 0.75rem;
+  text-align: center;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.vibe-card::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 19px;
+  padding: 3px;
+  background: linear-gradient(135deg, #e8a317, #ffd700, #ff6b00, #e8a317);
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: cardBorderSpin 4s linear infinite;
+}
+
+.vibe-card:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 40px var(--glow), 0 0 80px rgba(255, 215, 0, 0.3);
+  filter: brightness(1.15);
+}
+
+.vibe-card:hover::before {
+  opacity: 1;
+}
+
+.vibe-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 35px var(--glow), 0 0 60px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(255, 215, 0, 0.08);
+  background: linear-gradient(145deg, #252530 0%, #1a1a1e 100%);
+}
+
+.vibe-card.selected::before {
+  opacity: 1;
+}
+
+@keyframes cardBorderSpin {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+.vibe-card .vibe-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.2s ease;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 12px rgba(255, 255, 255, 0.15);
+}
+
+.vibe-card:hover .vibe-label {
+  transform: scale(1.08);
+}
+
+/* Click pulse effect */
+.vibe-card.pulse {
+  animation: pulse 0.5s ease-out;
+}
+
+.vibe-card.pulse:hover {
+  transform: scale(1.08);
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 32px var(--glow); }
+  50% { box-shadow: 0 0 48px var(--glow); }
+  100% { box-shadow: 0 0 24px var(--glow); }
+}
+
+/* Ripple on click */
+.vibe-card .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(232, 163, 23, 0.35);
+  transform: scale(0);
+  animation: ripple 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* ---------- Psychedelic vibe visuals (oil & gas themed) ---------- */
+
+/* 1. Vibe Coding – matrix/terminal green rain, scanlines */
+.vibe-visual--vibe-coding {
+  background: linear-gradient(180deg, #051505 0%, #0a2f0a 40%, #063306 70%, #051505 100%);
+  background-size: 100% 300%;
+  animation: vibeCodingBg 8s ease-in-out infinite;
+}
+
+.vibe-visual--vibe-coding::before {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 120, 0.12) 2px,
+    rgba(0, 255, 120, 0.12) 4px
+  );
+  animation: vibeCodingScan 0.15s linear infinite;
+}
+
+.vibe-visual--vibe-coding::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 255, 150, 0.25) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: vibeCodingSweep 4s ease-in-out infinite;
+}
+
+@keyframes vibeCodingBg {
+  0%, 100% { background-position: 0 0; }
+  50% { background-position: 0 50%; }
+}
+
+@keyframes vibeCodingScan {
+  to { transform: translateY(4px); }
+}
+
+@keyframes vibeCodingSweep {
+  0%, 100% { background-position: -100% 0; }
+  50% { background-position: 200% 0; }
+}
+
+/* 2. Gas Vibes – flames, bright orange/blue */
+.vibe-visual--gas {
+  background: radial-gradient(ellipse at 50% 120%, #1a2040 0%, #0a0a18 50%, #050510 100%);
+}
+
+.vibe-visual--gas::before {
+  background: radial-gradient(
+    circle at 20% 80%,
+    rgba(255, 180, 80, 0.55) 0%,
+    rgba(255, 100, 30, 0.3) 25%,
+    transparent 45%
+  );
+  animation: gasFloat1 6s ease-in-out infinite;
+}
+
+.vibe-visual--gas::after {
+  background: radial-gradient(
+    circle at 80% 60%,
+    rgba(100, 200, 255, 0.5) 0%,
+    rgba(255, 150, 50, 0.35) 30%,
+    transparent 50%
+  );
+  animation: gasFloat2 7s ease-in-out infinite 1s;
+}
+
+@keyframes gasFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+  50% { transform: translate(-10%, -30%) scale(1.2); opacity: 1; }
+}
+
+@keyframes gasFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+  50% { transform: translate(15%, -25%) scale(1.15); opacity: 1; }
+}
+
+/* 3. Oil Vibes – black and gold liquid swirl, viscous */
+.vibe-visual--oil {
+  background: linear-gradient(
+    135deg,
+    #0a0805 0%,
+    #2a1f05 25%,
+    #1a1200 50%,
+    #2a2000 75%,
+    #0a0805 100%
+  );
+  background-size: 400% 400%;
+  animation: oilSwirl 12s ease-in-out infinite;
+}
+
+.vibe-visual--oil::before {
+  background: radial-gradient(
+    ellipse 80% 50% at 30% 50%,
+    rgba(255, 215, 0, 0.5) 0%,
+    rgba(255, 180, 0, 0.35) 30%,
+    transparent 55%
+  );
+  animation: oilGlow 5s ease-in-out infinite;
+}
+
+.vibe-visual--oil::after {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent,
+    rgba(255, 220, 80, 0.35),
+    transparent,
+    rgba(255, 180, 0, 0.45),
+    transparent
+  );
+  animation: oilRotate 20s linear infinite;
+}
+
+@keyframes oilSwirl {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes oilGlow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes oilRotate {
+  to { transform: rotate(360deg); }
+}
+
+/* 4. BOE Vibes – barrel stripes, metallic rotation */
+.vibe-visual--boe {
+  background: linear-gradient(
+    90deg,
+    #151510 0%,
+    #3a3225 12%,
+    #1a1810 25%,
+    #3a3528 37%,
+    #151510 50%,
+    #3a3225 62%,
+    #1a1810 75%,
+    #3a3528 87%,
+    #151510 100%
+  );
+  background-size: 200% 100%;
+  animation: boeStripe 6s linear infinite;
+}
+
+.vibe-visual--boe::before {
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 230, 180, 0.25) 50%,
+    transparent 60%
+  );
+  background-size: 50% 100%;
+  animation: boeShine 3s ease-in-out infinite;
+}
+
+@keyframes boeStripe {
+  to { background-position: -200% 0; }
+}
+
+@keyframes boeShine {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* 5. Rig Vibes – steel grid, industrial, orange sparks */
+.vibe-visual--rig {
+  background: linear-gradient(180deg, #0a0a0c 0%, #1a1810 50%, #0c0a08 100%);
+}
+
+.vibe-visual--rig::before {
+  background-image:
+    linear-gradient(rgba(255, 180, 80, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 180, 80, 0.2) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: rigGridMove 15s linear infinite;
+}
+
+.vibe-visual--rig::after {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 120, 0, 0.5) 0%,
+    rgba(255, 180, 50, 0.3) 25%,
+    transparent 50%
+  );
+  animation: rigSpark 2s ease-in-out infinite;
+}
+
+@keyframes rigGridMove {
+  0% { transform: perspective(400px) rotateX(60deg) translateY(0); }
+  100% { transform: perspective(400px) rotateX(60deg) translateY(40px); }
+}
+
+@keyframes rigSpark {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* 6. Pipeline Vibes – flowing horizontal pipes */
+.vibe-visual--pipeline {
+  background: linear-gradient(90deg, #0a0c10 0%, #1a2435 50%, #0a0c10 100%);
+  background-size: 200% 100%;
+  animation: pipelineFlow 8s ease-in-out infinite;
+}
+
+.vibe-visual--pipeline::before {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 60px,
+    rgba(255, 210, 50, 0.35) 60px,
+    rgba(255, 210, 50, 0.35) 65px
+  );
+  animation: pipelineMove 4s linear infinite;
+}
+
+.vibe-visual--pipeline::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(100, 220, 255, 0.2),
+    transparent
+  );
+  background-size: 100% 100%;
+  animation: pipelineShimmer 3s ease-in-out infinite;
+}
+
+@keyframes pipelineFlow {
+  0%, 100% { background-position: 0 0; }
+  50% { background-position: -100% 0; }
+}
+
+@keyframes pipelineMove {
+  to { transform: translateX(-65px); }
+}
+
+@keyframes pipelineShimmer {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* 7. Refinery Vibes – towers, heat shimmer, yellow/orange */
+.vibe-visual--refinery {
+  background: linear-gradient(
+    180deg,
+    #1a0c00 0%,
+    #3a2000 30%,
+    #2a1500 70%,
+    #120800 100%
+  );
+}
+
+.vibe-visual--refinery::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 220, 100, 0.4) 20%,
+    rgba(255, 160, 40, 0.55) 50%,
+    rgba(255, 220, 100, 0.4) 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: refineryShimmer 5s ease-in-out infinite;
+}
+
+.vibe-visual--refinery::after {
+  filter: blur(2px);
+  background: radial-gradient(
+    ellipse 60% 30% at 50% 70%,
+    rgba(255, 200, 60, 0.5) 0%,
+    rgba(255, 140, 20, 0.35) 40%,
+    transparent 65%
+  );
+  animation: refineryHeat 4s ease-in-out infinite;
+}
+
+@keyframes refineryShimmer {
+  0%, 100% { background-position: 0 0; opacity: 0.8; }
+  50% { background-position: -100% 0; opacity: 1; }
+}
+
+@keyframes refineryHeat {
+  0%, 100% { transform: scaleY(1); opacity: 0.6; }
+  50% { transform: scaleY(1.2); opacity: 1; }
+}
+
+/* 8. Wildcat Vibes – explosive burst, cheeky cat */
+.vibe-visual--wildcat {
+  background: radial-gradient(
+    circle at 50% 50%,
+    #2a1505 0%,
+    #1a0800 40%,
+    #0d0300 100%
+  );
+}
+
+.vibe-visual--wildcat::before {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(255, 120, 40, 0.55) 30deg,
+    transparent 60deg,
+    rgba(255, 200, 80, 0.5) 120deg,
+    transparent 150deg,
+    rgba(255, 140, 50, 0.55) 210deg,
+    transparent 240deg,
+    rgba(255, 220, 120, 0.4) 300deg,
+    transparent 330deg
+  );
+  animation: wildcatBurst 3s ease-in-out infinite;
+}
+
+.vibe-visual--wildcat::after {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 180, 60, 0.6) 0%,
+    rgba(255, 100, 20, 0.35) 30%,
+    transparent 50%
+  );
+  animation: wildcatPulse 1.5s ease-out infinite;
+}
+
+@keyframes wildcatBurst {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+  50% { transform: scale(1.15) rotate(180deg); opacity: 1; }
+}
+
+@keyframes wildcatPulse {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* 9. Spud Vibes – drilling spiral, concentric circles */
+.vibe-visual--spud {
+  background: radial-gradient(
+    circle at 50% 50%,
+    #0d100a 0%,
+    #050805 100%
+  );
+}
+
+.vibe-visual--spud::before {
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    transparent 0px,
+    transparent 30px,
+    rgba(255, 220, 120, 0.28) 30px,
+    rgba(255, 220, 120, 0.28) 32px
+  );
+  animation: spudDrill 8s linear infinite;
+}
+
+.vibe-visual--spud::after {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(255, 230, 140, 0.35),
+    transparent 30%,
+    rgba(255, 200, 100, 0.25),
+    transparent 60%,
+    rgba(255, 230, 140, 0.35),
+    transparent
+  );
+  animation: spudSpin 6s linear infinite;
+}
+
+@keyframes spudDrill {
+  to { transform: scale(1.2); }
+}
+
+@keyframes spudSpin {
+  to { transform: rotate(-360deg); }
+}
+
+/* 10. Wellhead Vibes – valve/cross shape, pressure pulses */
+.vibe-visual--wellhead {
+  background: linear-gradient(180deg, #050a10 0%, #0f1a2a 50%, #051018 100%);
+}
+
+.vibe-visual--wellhead::before {
+  background:
+    linear-gradient(90deg, transparent 45%, rgba(0, 200, 255, 0.4) 50%, transparent 55%),
+    linear-gradient(0deg, transparent 45%, rgba(0, 200, 255, 0.4) 50%, transparent 55%);
+  background-size: 100% 100%;
+  animation: wellheadPulse 2s ease-in-out infinite;
+}
+
+.vibe-visual--wellhead::after {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 220, 255, 0.45) 0%,
+    rgba(0, 160, 220, 0.25) 35%,
+    transparent 55%
+  );
+  animation: wellheadPressure 1.5s ease-in-out infinite;
+}
+
+@keyframes wellheadPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes wellheadPressure {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* 11. Crude Vibes – raw black gold, dripping, organic */
+.vibe-visual--crude {
+  background: linear-gradient(
+    180deg,
+    #0d0a05 0%,
+    #1a1408 30%,
+    #120d05 70%,
+    #080605 100%
+  );
+}
+
+.vibe-visual--crude::before {
+  background: radial-gradient(
+    ellipse 50% 80% at 50% 20%,
+    rgba(80, 60, 20, 0.7) 0%,
+    rgba(255, 200, 50, 0.2) 40%,
+    transparent 60%
+  );
+  animation: crudeDrip 5s ease-in-out infinite;
+}
+
+.vibe-visual--crude::after {
+  background: radial-gradient(
+    circle at 70% 80%,
+    rgba(255, 215, 0, 0.5) 0%,
+    rgba(255, 180, 0, 0.3) 25%,
+    transparent 50%
+  );
+  animation: crudeGlow 4s ease-in-out infinite 0.5s;
+}
+
+@keyframes crudeDrip {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(5%) scaleY(1.1); }
+}
+
+@keyframes crudeGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* 12. Upstream Vibes – rising diagonal lines, elevation */
+.vibe-visual--upstream {
+  background: linear-gradient(
+    160deg,
+    #050a12 0%,
+    #0f2040 40%,
+    #081828 100%
+  );
+}
+
+.vibe-visual--upstream::before {
+  background: repeating-linear-gradient(
+    120deg,
+    transparent 0px,
+    transparent 50px,
+    rgba(0, 200, 255, 0.22) 50px,
+    rgba(0, 200, 255, 0.22) 52px
+  );
+  animation: upstreamRise 10s linear infinite;
+}
+
+.vibe-visual--upstream::after {
+  background: linear-gradient(
+    160deg,
+    transparent 0%,
+    rgba(100, 220, 255, 0.35) 50%,
+    transparent 100%
+  );
+  background-size: 100% 200%;
+  animation: upstreamFlow 6s ease-in-out infinite;
+}
+
+@keyframes upstreamRise {
+  0% { transform: translateY(0) skewY(-2deg); }
+  100% { transform: translateY(-52px) skewY(-2deg); }
+}
+
+@keyframes upstreamFlow {
+  0%, 100% { background-position: 0 0; }
+  50% { background-position: 0 -100%; }
+}
+
+/* 13. Adam Vibes – bright pink */
+.vibe-visual--adam {
+  background: linear-gradient(
+    135deg,
+    #1a0515 0%,
+    #2a0a20 30%,
+    #1f0518 60%,
+    #150510 100%
+  );
+  background-size: 400% 400%;
+  animation: adamPulse 10s ease-in-out infinite;
+}
+
+.vibe-visual--adam::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 20, 147, 0.5) 0%,
+    rgba(255, 105, 180, 0.35) 30%,
+    transparent 55%
+  );
+  animation: adamGlow 4s ease-in-out infinite;
+}
+
+.vibe-visual--adam::after {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent,
+    rgba(255, 20, 147, 0.4),
+    transparent,
+    rgba(255, 105, 180, 0.45),
+    transparent
+  );
+  animation: oilRotate 20s linear infinite;
+}
+
+@keyframes adamPulse {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes adamGlow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+/* Niels Vibes – bright cyan/teal */
+.vibe-visual--niels {
+  background: linear-gradient(
+    135deg,
+    #051a20 0%,
+    #0a2a35 30%,
+    #051518 60%,
+    #051a22 100%
+  );
+  background-size: 400% 400%;
+  animation: adamPulse 10s ease-in-out infinite;
+}
+
+.vibe-visual--niels::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 212, 255, 0.5) 0%,
+    rgba(0, 170, 204, 0.35) 30%,
+    transparent 55%
+  );
+  animation: adamGlow 4s ease-in-out infinite;
+}
+
+.vibe-visual--niels::after {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent,
+    rgba(0, 212, 255, 0.35),
+    transparent,
+    rgba(0, 180, 220, 0.4),
+    transparent
+  );
+  animation: oilRotate 20s linear infinite;
+}
+
+/* Teegan Vibes – bright purple/violet */
+.vibe-visual--teegan {
+  background: linear-gradient(
+    135deg,
+    #15051a 0%,
+    #220a2a 30%,
+    #180518 60%,
+    #1a0520 100%
+  );
+  background-size: 400% 400%;
+  animation: adamPulse 10s ease-in-out infinite;
+}
+
+.vibe-visual--teegan::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(199, 125, 255, 0.5) 0%,
+    rgba(157, 78, 221, 0.35) 30%,
+    transparent 55%
+  );
+  animation: adamGlow 4s ease-in-out infinite;
+}
+
+.vibe-visual--teegan::after {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent,
+    rgba(199, 125, 255, 0.35),
+    transparent,
+    rgba(157, 78, 221, 0.45),
+    transparent
+  );
+  animation: oilRotate 20s linear infinite;
+}
+
+/* Josh Vibes – bright green */
+.vibe-visual--josh {
+  background: linear-gradient(
+    135deg,
+    #051a0a 0%,
+    #0a2a15 30%,
+    #051808 60%,
+    #051a0d 100%
+  );
+  background-size: 400% 400%;
+  animation: adamPulse 10s ease-in-out infinite;
+}
+
+.vibe-visual--josh::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 255, 136, 0.5) 0%,
+    rgba(0, 204, 102, 0.35) 30%,
+    transparent 55%
+  );
+  animation: adamGlow 4s ease-in-out infinite;
+}
+
+.vibe-visual--josh::after {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent,
+    rgba(0, 255, 136, 0.35),
+    transparent,
+    rgba(0, 204, 102, 0.45),
+    transparent
+  );
+  animation: oilRotate 20s linear infinite;
+}
+
+/* Kaleb Vibes – bright orange/amber */
+.vibe-visual--kaleb {
+  background: linear-gradient(
+    135deg,
+    #1a1005 0%,
+    #2a1805 30%,
+    #1a0f05 60%,
+    #150a03 100%
+  );
+  background-size: 400% 400%;
+  animation: adamPulse 10s ease-in-out infinite;
+}
+
+.vibe-visual--kaleb::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 149, 0, 0.5) 0%,
+    rgba(255, 179, 64, 0.35) 30%,
+    transparent 55%
+  );
+  animation: adamGlow 4s ease-in-out infinite;
+}
+
+.vibe-visual--kaleb::after {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent,
+    rgba(255, 149, 0, 0.35),
+    transparent,
+    rgba(255, 179, 64, 0.45),
+    transparent
+  );
+  animation: oilRotate 20s linear infinite;
+}
