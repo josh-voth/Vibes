@@ -120,7 +120,7 @@ function selectVibe(id, cardEl) {
   if (id === 'teegan') handleTeeginClick();
   if (id === 'kaleb') {
     setTimeout(() => {
-      window.location.href = "https://www.google.com/search?q=rickrolling+video+no+adds&sca_esv=9be18ee3e64d646c&rlz=1C1GCEV_enUS1200US1200&biw=1536&bih=695&ei=MwOhacnwLIC4wN4PvNyfsAI&ved=0ahUKEwiJ1vDY0fiSAxUAHNAFHTzuByYQ4dUDCBE&uact=5&oq=rickrolling+video+no+adds&gs_lp=Egxnd3Mtd2l6LXNlcnAiGXJpY2tyb2xsaW5nIHZpZGVvIG5vIGFkZHMyBhAAGBYYHjILEAAYgAQYhgMYigUyCxAAGIAEGIYDGIoFSKsQUMwDWJIPcAF4AJABAJgBXaAB_wSqAQE5uAEDyAEA-AEBmAIJoALxBMICChAAGLADGNYEGEfCAgUQABjvBZgDAIgGAZAGCJIHATmgB-ctsgcBOLgH7gTCBwMxLjjIBxCACAA&sclient=gws-wiz-serp#fpstate=ive&vld=cid:0f33c3b6,vid:2qBlE2-WL60,st:0";
+      window.location.href = "https://www.youtube.com/watch?v=2qBlE2-WL60&autoplay=1";
     }, 2000);
   }
   screenShake();
