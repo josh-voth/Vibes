@@ -115,7 +115,10 @@ function selectVibe(id, cardEl) {
 
   pulseCard(cardEl);
   createRipple(cardEl);
+  miniConfetti();
   runCelebrationEffect(id);
+  if (id === 'kaleb') kalebScare();
+  if (id === 'teegan') handleTeeginClick();
   screenShake();
   if (vibeHype) {
     vibeHype.textContent = HYPE_MESSAGES[Math.floor(Math.random() * HYPE_MESSAGES.length)];
@@ -143,6 +146,30 @@ function runCelebrationEffect(vibeId) {
   else if (effect === 'fireworks') fireworks();
   else if (effect === 'sparklers') sparklers();
   else if (effect === 'shootingStars') shootingStars();
+}
+
+function miniConfetti() {
+  if (!confettiLayer) return;
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
+  const count = 42;
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-particle';
+    el.style.left = centerX + (Math.random() - 0.5) * 60 + 'px';
+    el.style.top = centerY + (Math.random() - 0.5) * 60 + 'px';
+    el.style.background = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+    el.style.width = (5 + Math.random() * 8) + 'px';
+    el.style.height = (5 + Math.random() * 8) + 'px';
+    const dx = (Math.random() - 0.5) * 400;
+    const dy = (Math.random() - 0.5) * 400 - 150;
+    el.style.setProperty('--dx', dx + 'px');
+    el.style.setProperty('--dy', dy + 'px');
+    el.style.animationDuration = 1.2 + Math.random() * 0.6 + 's';
+    el.style.animationDelay = Math.random() * 0.05 + 's';
+    confettiLayer.appendChild(el);
+    setTimeout(() => el.remove(), 2000);
+  }
 }
 
 function massiveConfetti() {
@@ -250,6 +277,181 @@ function shootingStars() {
   }
 }
 
+function playScream() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const duration = 1.2;
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      const t = i / ctx.sampleRate;
+      const freq = 200 + 800 * (1 - Math.exp(-t * 3));
+      const env = Math.sin(Math.PI * t / duration) * (0.3 + 0.7 * Math.random());
+      data[i] = env * Math.sin(2 * Math.PI * freq * t) * 0.4;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    src.connect(ctx.destination);
+    src.start(0);
+  } catch (_) {}
+}
+
+function showScaryFace() {
+  const overlay = document.createElement('div');
+  overlay.className = 'scary-face-overlay';
+  overlay.innerHTML = `<svg class="scary-face-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="100" cy="100" rx="85" ry="95" fill="#1a0a0a" stroke="#330000" stroke-width="4"/>
+    <ellipse cx="65" cy="75" rx="22" ry="28" fill="#fff"/><ellipse cx="135" cy="75" rx="22" ry="28" fill="#fff"/>
+    <circle cx="68" cy="78" r="8" fill="#000"/><circle cx="138" cy="78" r="8" fill="#000"/>
+    <path d="M50 120 Q100 165 150 120" stroke="#330000" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M70 125 L80 140 L95 128 L110 142 L125 128 L130 140" fill="#1a0a0a" stroke="#330000" stroke-width="2"/>
+    <path d="M40 55 L55 45 M160 55 L145 45" stroke="#330000" stroke-width="3" fill="none"/>
+  </svg>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('scary-face-overlay--zoom'));
+  setTimeout(() => overlay.classList.add('scary-face-overlay--shake'), 350);
+  setTimeout(() => {
+    overlay.classList.add('scary-face-overlay--out');
+    setTimeout(() => overlay.remove(), 600);
+  }, 2000);
+}
+
+function kalebScare() {
+  playScream();
+  showScaryFace();
+}
+
+/* Teegin Easter egg: 5 clicks within 4s triggers glitch sequence */
+let teeginClicks = 0;
+let teeginResetTimer = null;
+
+function handleTeeginClick() {
+  teeginClicks++;
+  if (teeginResetTimer) clearTimeout(teeginResetTimer);
+  teeginResetTimer = setTimeout(() => {
+    teeginClicks = 0;
+    teeginResetTimer = null;
+  }, 4000);
+  if (teeginClicks >= 5) {
+    if (teeginResetTimer) clearTimeout(teeginResetTimer);
+    teeginResetTimer = null;
+    teeginClicks = 0;
+    runTeeginSequence();
+  }
+}
+
+const TEEGIN_TERMINAL_LINES = [
+  "> ACCESS GRANTED",
+  "> LOADING TEEGIN.EXE",
+  "> INJECTING VIBES...",
+  "> VIBES.EXE CORRUPTED (INTENTIONAL)",
+  "> MAXIMUM MODE ENGAGED",
+  "> ERROR: TOO MUCH VIBE",
+  "> DONE. HAVE A NICE DAY.",
+];
+
+function runTeeginSequence() {
+  const overlay = document.createElement("div");
+  overlay.className = "glitch-overlay";
+  overlay.setAttribute("aria-hidden", "true");
+
+  const scanlines = document.createElement("div");
+  scanlines.className = "glitch-overlay__scanlines";
+  const vignette = document.createElement("div");
+  vignette.className = "glitch-overlay__vignette";
+  const chromatic = document.createElement("div");
+  chromatic.className = "glitch-overlay__chromatic";
+  const tears = document.createElement("div");
+  tears.className = "glitch-overlay__tears";
+  for (let i = 0; i < 12; i++) {
+    const tear = document.createElement("div");
+    tear.className = "glitch-tear";
+    tears.appendChild(tear);
+  }
+  const terminalWrap = document.createElement("div");
+  terminalWrap.className = "glitch-overlay__terminal";
+  const terminal = document.createElement("div");
+  terminal.className = "glitch-terminal";
+  terminal.innerHTML = '<div class="glitch-terminal__line"></div><span class="glitch-terminal__cursor"></span>';
+  terminalWrap.appendChild(terminal);
+  const staticEl = document.createElement("div");
+  staticEl.className = "glitch-overlay__static";
+
+  overlay.appendChild(scanlines);
+  overlay.appendChild(vignette);
+  overlay.appendChild(chromatic);
+  overlay.appendChild(tears);
+  overlay.appendChild(terminalWrap);
+  overlay.appendChild(staticEl);
+  document.body.appendChild(overlay);
+
+  playGlitchBeep();
+
+  const lineEl = terminal.querySelector(".glitch-terminal__line");
+  const cursorEl = terminal.querySelector(".glitch-terminal__cursor");
+  let lineIndex = 0;
+  let charIndex = 0;
+
+  function typeNext() {
+    if (lineIndex >= TEEGIN_TERMINAL_LINES.length) {
+      setTimeout(() => endSequence(), 800);
+      return;
+    }
+    const line = TEEGIN_TERMINAL_LINES[lineIndex];
+    if (charIndex < line.length) {
+      lineEl.textContent += line[charIndex];
+      charIndex++;
+      setTimeout(typeNext, 22 + Math.random() * 18);
+    } else {
+      lineEl.textContent += "\n";
+      lineIndex++;
+      charIndex = 0;
+      setTimeout(typeNext, 120 + Math.random() * 80);
+    }
+  }
+
+  function endSequence() {
+    overlay.classList.add("glitch-overlay--out");
+    setTimeout(() => overlay.remove(), 1000);
+  }
+
+  typeNext();
+
+  setTimeout(() => {
+    document.body.classList.add("shake");
+    setTimeout(() => document.body.classList.remove("shake"), 400);
+  }, 800);
+
+  function doStaticFlash() {
+    staticEl.classList.remove("glitch-overlay__static--flash");
+    staticEl.offsetHeight;
+    staticEl.classList.add("glitch-overlay__static--flash");
+    setTimeout(() => staticEl.classList.remove("glitch-overlay__static--flash"), 150);
+  }
+
+  setTimeout(doStaticFlash, 600);
+  setTimeout(doStaticFlash, 2200);
+  setTimeout(doStaticFlash, 3800);
+}
+
+function playGlitchBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.15);
+    osc.type = "square";
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.18);
+  } catch (_) {}
+}
+
 function screenShake() {
   document.body.classList.add('shake');
   setTimeout(() => document.body.classList.remove('shake'), 400);
@@ -290,3 +492,73 @@ function resetTilt(card) {
 
 setVibeVisual(selectedId);
 renderCards();
+
+/* Custom cursor: emoji trail + burst on clickable hover */
+(function () {
+  const cursorLayer = document.getElementById('cursor-layer');
+  const customCursor = document.getElementById('custom-cursor');
+  const cursorTrail = document.getElementById('cursor-trail');
+  if (!cursorLayer || !customCursor || !cursorTrail) return;
+
+  const TRAIL_EMOJIS = ['🔮', '✨', '🌈'];
+  const BURST_COLORS = ['#ffd700', '#ff69b4', '#00d4ff', '#00ff88', '#c77dff', '#ff9500'];
+  let mouseX = 0, mouseY = 0;
+  let trailTick = 0;
+  let isOverClickable = false;
+
+  customCursor.textContent = '🔮';
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    customCursor.style.left = mouseX + 'px';
+    customCursor.style.top = mouseY + 'px';
+
+    trailTick++;
+    if (trailTick % 4 === 0) {
+      const p = document.createElement('span');
+      p.className = 'cursor-trail-particle';
+      p.textContent = TRAIL_EMOJIS[Math.floor(Math.random() * TRAIL_EMOJIS.length)];
+      p.style.left = mouseX + 'px';
+      p.style.top = mouseY + 'px';
+      const tx = (Math.random() - 0.5) * 40;
+      const ty = (Math.random() - 0.5) * 40 - 20;
+      p.style.setProperty('--tx', tx + 'px');
+      p.style.setProperty('--ty', ty + 'px');
+      cursorTrail.appendChild(p);
+      setTimeout(() => p.remove(), 800);
+    }
+  });
+
+  document.body.addEventListener('mouseover', (e) => {
+    const target = e.target;
+    const clickable = target.closest('button, a[href], [role="button"], .vibe-card');
+    if (clickable && !isOverClickable) {
+      isOverClickable = true;
+      customCursor.classList.add('cursor--hover');
+      for (let i = 0; i < 16; i++) {
+        const p = document.createElement('span');
+        p.className = 'cursor-burst-particle';
+        p.style.left = mouseX + 'px';
+        p.style.top = mouseY + 'px';
+        const angle = (i / 16) * Math.PI * 2 + Math.random() * 0.5;
+        const dist = 50 + Math.random() * 60;
+        const bx = Math.cos(angle) * dist;
+        const by = Math.sin(angle) * dist;
+        p.style.setProperty('--bx', bx + 'px');
+        p.style.setProperty('--by', by + 'px');
+        p.style.background = BURST_COLORS[Math.floor(Math.random() * BURST_COLORS.length)];
+        p.style.animationDuration = 0.4 + Math.random() * 0.2 + 's';
+        cursorTrail.appendChild(p);
+        setTimeout(() => p.remove(), 600);
+      }
+    }
+  });
+
+  document.body.addEventListener('mouseout', (e) => {
+    if (!e.relatedTarget || !e.relatedTarget.closest('button, a[href], [role="button"], .vibe-card')) {
+      isOverClickable = false;
+      customCursor.classList.remove('cursor--hover');
+    }
+  });
+})();

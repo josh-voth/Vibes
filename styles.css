@@ -4,6 +4,15 @@
   box-sizing: border-box;
 }
 
+html, body {
+  cursor: none;
+}
+
+@media (hover: none) {
+  html, body { cursor: auto; }
+  .cursor-layer { display: none !important; }
+}
+
 :root {
   --bg: #0d0d0f;
   --card-bg: #1a1a1e;
@@ -40,6 +49,78 @@ body.shake {
   45% { transform: translate(-4px, 4px); }
   60% { transform: translate(4px, -4px); }
   75% { transform: translate(-2px, 2px); }
+}
+
+/* Custom cursor layer */
+.cursor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.custom-cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+  transition: transform 0.08s ease-out;
+  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6));
+}
+
+.custom-cursor.cursor--hover {
+  transform: translate(-50%, -50%) scale(1.4);
+}
+
+.cursor-trail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cursor-trail-particle {
+  position: absolute;
+  font-size: 14px;
+  line-height: 1;
+  pointer-events: none;
+  animation: cursorTrailFade 0.8s ease-out forwards;
+}
+
+@keyframes cursorTrailFade {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0.4);
+  }
+}
+
+.cursor-burst-particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: cursorBurstFade 0.5s ease-out forwards;
+}
+
+@keyframes cursorBurstFade {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--bx), var(--by)) scale(0);
+  }
 }
 
 /* Confetti layer */
@@ -208,6 +289,49 @@ body.shake {
   }
 }
 
+/* Kaleb scary face overlay */
+.scary-face-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  pointer-events: none;
+  opacity: 1;
+  transform: scale(0.1);
+  transition: opacity 0.6s ease-out;
+}
+
+.scary-face-overlay--zoom {
+  transform: scale(1);
+  transition: transform 0.35s ease-out;
+}
+
+.scary-face-overlay--shake {
+  animation: scaryFaceShake 0.5s ease-in-out;
+}
+
+.scary-face-overlay--out {
+  opacity: 0;
+}
+
+.scary-face-svg {
+  width: min(90vmin, 500px);
+  height: auto;
+  filter: drop-shadow(0 0 30px rgba(180, 0, 0, 0.5));
+}
+
+@keyframes scaryFaceShake {
+  0%, 100% { transform: scale(1) translate(0, 0); }
+  15% { transform: scale(1.02) translate(-8px, 2px); }
+  30% { transform: scale(1.02) translate(8px, -3px); }
+  45% { transform: scale(0.98) translate(-5px, -2px); }
+  60% { transform: scale(1.02) translate(6px, 3px); }
+  75% { transform: scale(0.99) translate(-4px, 2px); }
+}
+
 /* Full-screen psychedelic vibe background */
 .vibe-visual {
   position: fixed;
@@ -285,13 +409,64 @@ body.shake {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: titleShimmer 4s ease-in-out infinite;
-  filter: drop-shadow(0 0 12px rgba(232, 163, 23, 0.6));
+  animation: titleShimmer 4s ease-in-out infinite, titleGlowCycle 3s ease-in-out infinite;
+  transition: transform 0.25s ease;
+}
+
+.header__title:hover {
+  animation: titleShimmer 4s ease-in-out infinite, titleGlowCycle 3s ease-in-out infinite, hoverBounce 0.5s ease;
+}
+
+@keyframes titleGlowCycle {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 24px rgba(232, 163, 23, 0.5)); }
+  25% { filter: drop-shadow(0 0 12px rgba(255, 105, 180, 0.8)) drop-shadow(0 0 24px rgba(255, 20, 147, 0.5)); }
+  50% { filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.8)) drop-shadow(0 0 24px rgba(0, 170, 204, 0.5)); }
+  75% { filter: drop-shadow(0 0 12px rgba(199, 125, 255, 0.8)) drop-shadow(0 0 24px rgba(157, 78, 221, 0.5)); }
 }
 
 @keyframes titleShimmer {
   0%, 100% { background-position: 0% center; }
   50% { background-position: 100% center; }
+}
+
+.header__mode {
+  font-family: "Bebas Neue", "Passion One", Impact, sans-serif;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  font-weight: 700;
+  margin: 0 0 0.4rem 0;
+  letter-spacing: 0.2em;
+  color: #fff;
+  animation: neonGlowCycle 2.5s ease-in-out infinite;
+  transition: transform 0.25s ease;
+}
+
+.header__mode:hover {
+  animation: neonGlowCycle 2.5s ease-in-out infinite, hoverBounce 0.5s ease;
+}
+
+@keyframes neonGlowCycle {
+  0%, 100% {
+    text-shadow: 0 0 10px #ffd700, 0 0 20px #e8a317, 0 0 30px rgba(255, 215, 0, 0.6);
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+  }
+  25% {
+    text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff1493, 0 0 30px rgba(255, 105, 180, 0.6);
+    filter: drop-shadow(0 0 8px rgba(255, 20, 147, 0.8));
+  }
+  50% {
+    text-shadow: 0 0 10px #00d4ff, 0 0 20px #00aacc, 0 0 30px rgba(0, 212, 255, 0.6);
+    filter: drop-shadow(0 0 8px rgba(0, 200, 255, 0.8));
+  }
+  75% {
+    text-shadow: 0 0 10px #c77dff, 0 0 20px #9d4edd, 0 0 30px rgba(199, 125, 255, 0.6);
+    filter: drop-shadow(0 0 8px rgba(157, 78, 221, 0.8));
+  }
+}
+
+@keyframes hoverBounce {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+  70% { transform: translateY(-2px); }
 }
 
 .subtitle,
@@ -301,6 +476,32 @@ body.shake {
   font-size: clamp(0.75rem, 2.5vw, 0.95rem);
   letter-spacing: 0.12em;
   text-shadow: 0 0 10px rgba(232, 163, 23, 0.5);
+}
+
+.wiggle-icon {
+  display: inline-block;
+  animation: wiggle 0.6s ease-in-out infinite;
+}
+
+.header-emoji {
+  display: inline-block;
+  margin-left: 0.15em;
+  animation: emojiBounce 1s ease-in-out infinite;
+}
+
+.header__title .header-emoji {
+  -webkit-text-fill-color: initial;
+  color: #ffd700;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+@keyframes emojiBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 .current-vibe-label {
@@ -318,12 +519,18 @@ body.shake {
   font-weight: 900;
   color: #ffd700;
   margin: 0;
-  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(232, 163, 23, 0.5);
   letter-spacing: 0.04em;
-  animation: vibePop 0.6s ease-out;
+  animation: neonGlowCycle 3s ease-in-out infinite;
+  transition: transform 0.25s ease;
 }
 
-.current-vibe-display.pop {
+.current-vibe-display:hover,
+#current-vibe-name:hover {
+  animation: neonGlowCycle 3s ease-in-out infinite, hoverBounce 0.5s ease;
+}
+
+.current-vibe-display.pop,
+#current-vibe-name.pop {
   animation: vibePop 0.5s ease-out;
 }
 
@@ -373,7 +580,8 @@ body.shake {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, filter 0.3s ease;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, filter 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   padding: 0.75rem;
   text-align: center;
   user-select: none;
@@ -400,13 +608,22 @@ body.shake {
 }
 
 .vibe-card:hover {
-  transform: scale(1.15);
-  box-shadow: 0 0 40px var(--glow), 0 0 80px rgba(255, 215, 0, 0.3);
+  transform: scale(1.15) translateY(-4px);
+  animation: cardNeonFlicker 0.14s ease-in-out infinite;
   filter: brightness(1.15);
 }
 
 .vibe-card:hover::before {
   opacity: 1;
+}
+
+@keyframes cardNeonFlicker {
+  0%, 100% {
+    box-shadow: 0 0 40px var(--glow), 0 0 80px rgba(255, 215, 0, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 28px var(--glow), 0 0 55px rgba(255, 215, 0, 0.5), 0 0 90px rgba(255, 180, 50, 0.25);
+  }
 }
 
 .vibe-card.selected {
@@ -427,15 +644,25 @@ body.shake {
 .vibe-card .vibe-label {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #fff;
+  background: linear-gradient(90deg, #fff 0%, #ffd700 25%, #fff 50%, #ffd700 75%, #fff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   position: relative;
   z-index: 1;
   transition: transform 0.2s ease;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 12px rgba(255, 255, 255, 0.15);
+  text-shadow: none;
+  animation: labelShimmer 4s linear infinite;
 }
 
 .vibe-card:hover .vibe-label {
   transform: scale(1.08);
+}
+
+@keyframes labelShimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
 /* Click pulse effect */

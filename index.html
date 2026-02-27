@@ -8,16 +8,22 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Passion+One:wght@700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="glitch.css" />
 </head>
 <body>
+  <div id="cursor-layer" class="cursor-layer" aria-hidden="true">
+    <div id="custom-cursor" class="custom-cursor"></div>
+    <div id="cursor-trail" class="cursor-trail"></div>
+  </div>
   <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
   <div id="vibe-visual" class="vibe-visual vibe-visual--vibe-coding" aria-hidden="true">
     <div class="vibe-visual__theme" id="vibe-visual-theme"></div>
   </div>
   <header class="header">
-    <h1 class="header__title">PICK YOUR VIBE</h1>
-    <p class="subtitle header__tagline">⚡ OIL & GAS EDITION — NO VIBES LEFT BEHIND ⚡</p>
-    <p class="current-vibe-label">YOU ARE NOW VIBING:</p>
+    <h1 class="header__title">PICK YOUR VIBE <span class="header-emoji" aria-hidden="true">✨</span></h1>
+    <p class="header__mode">MAXIMUM MODE <span class="header-emoji" aria-hidden="true">🔥</span></p>
+    <p class="subtitle header__tagline"><span class="wiggle-icon" aria-hidden="true">⚡</span> OIL & GAS EDITION — NO VIBES LEFT BEHIND <span class="wiggle-icon" aria-hidden="true">⚡</span></p>
+    <p class="current-vibe-label">YOU ARE NOW VIBING: <span class="header-emoji" aria-hidden="true">🎵</span></p>
     <p class="current-vibe-display" id="current-vibe-name">Vibe Coding</p>
     <p class="vibe-hype" id="vibe-hype"></p>
   </header>

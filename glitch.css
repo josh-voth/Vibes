@@ -1,0 +1,178 @@
+/* Teegin Easter egg: full-screen glitch overlay */
+
+.glitch-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  pointer-events: none;
+  background: #000;
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}
+
+.glitch-overlay.glitch-overlay--out {
+  opacity: 0;
+}
+
+/* CRT scanlines */
+.glitch-overlay__scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.4) 2px,
+    rgba(0, 0, 0, 0.4) 4px
+  );
+  animation: scanlineMove 0.1s linear infinite;
+}
+
+@keyframes scanlineMove {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+/* Vignette */
+.glitch-overlay__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(0, 0, 0, 0.5) 70%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+}
+
+/* Chromatic aberration / RGB split jitter */
+.glitch-overlay__chromatic {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+
+.glitch-overlay__chromatic::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,0,0,0.12) 0%, transparent 40%, transparent 60%, rgba(0,0,255,0.12) 100%);
+  animation: chromaticJitter 0.06s ease-in-out infinite;
+}
+
+.glitch-overlay__chromatic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(255,0,0,0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 50%, rgba(0,0,255,0.08) 0%, transparent 50%);
+  animation: chromaticJitterAlt 0.08s ease-in-out infinite;
+}
+
+@keyframes chromaticJitter {
+  0%, 100% { transform: translate(-4px, 0); opacity: 1; }
+  50% { transform: translate(3px, 2px); opacity: 0.85; }
+}
+
+@keyframes chromaticJitterAlt {
+  0%, 100% { transform: translate(4px, 0); opacity: 1; }
+  50% { transform: translate(-3px, -2px); opacity: 0.85; }
+}
+
+/* Glitch tears (horizontal slices) */
+.glitch-overlay__tears {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.glitch-tear {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8%;
+  background: #000;
+  animation: tearShift 0.15s ease-in-out infinite;
+}
+
+.glitch-tear:nth-child(1) { top: 0%; animation-delay: 0s; }
+.glitch-tear:nth-child(2) { top: 8%; animation-delay: 0.02s; }
+.glitch-tear:nth-child(3) { top: 16%; animation-delay: 0.01s; }
+.glitch-tear:nth-child(4) { top: 24%; animation-delay: 0.03s; }
+.glitch-tear:nth-child(5) { top: 32%; animation-delay: 0s; }
+.glitch-tear:nth-child(6) { top: 40%; animation-delay: 0.02s; }
+.glitch-tear:nth-child(7) { top: 48%; animation-delay: 0.01s; }
+.glitch-tear:nth-child(8) { top: 56%; animation-delay: 0.03s; }
+.glitch-tear:nth-child(9) { top: 64%; animation-delay: 0s; }
+.glitch-tear:nth-child(10) { top: 72%; animation-delay: 0.02s; }
+.glitch-tear:nth-child(11) { top: 80%; animation-delay: 0.01s; }
+.glitch-tear:nth-child(12) { top: 88%; animation-delay: 0.03s; }
+
+@keyframes tearShift {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+/* Terminal (above tears so text is readable) */
+.glitch-overlay__terminal {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.glitch-terminal {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+  color: #00ff88;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+  max-width: 90%;
+  line-height: 1.6;
+}
+
+.glitch-terminal__line {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.glitch-terminal__cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  background: #00ff88;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: terminalBlink 0.8s step-end infinite;
+}
+
+@keyframes terminalBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Full-screen static flash (on top) */
+.glitch-overlay__static {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.glitch-overlay__static.glitch-overlay__static--flash {
+  opacity: 0.85;
+  animation: staticFlash 0.12s steps(2) forwards;
+}
+
+@keyframes staticFlash {
+  0% { opacity: 0; }
+  50% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
