@@ -117,8 +117,12 @@ function selectVibe(id, cardEl) {
   createRipple(cardEl);
   miniConfetti();
   runCelebrationEffect(id);
-  if (id === 'kaleb') kalebScare();
   if (id === 'teegan') handleTeeginClick();
+  if (id === 'kaleb') {
+    setTimeout(() => {
+      window.location.href = "https://www.google.com/search?q=rickrolling+video+no+adds&sca_esv=9be18ee3e64d646c&rlz=1C1GCEV_enUS1200US1200&biw=1536&bih=695&ei=MwOhacnwLIC4wN4PvNyfsAI&ved=0ahUKEwiJ1vDY0fiSAxUAHNAFHTzuByYQ4dUDCBE&uact=5&oq=rickrolling+video+no+adds&gs_lp=Egxnd3Mtd2l6LXNlcnAiGXJpY2tyb2xsaW5nIHZpZGVvIG5vIGFkZHMyBhAAGBYYHjILEAAYgAQYhgMYigUyCxAAGIAEGIYDGIoFSKsQUMwDWJIPcAF4AJABAJgBXaAB_wSqAQE5uAEDyAEA-AEBmAIJoALxBMICChAAGLADGNYEGEfCAgUQABjvBZgDAIgGAZAGCJIHATmgB-ctsgcBOLgH7gTCBwMxLjjIBxCACAA&sclient=gws-wiz-serp#fpstate=ive&vld=cid:0f33c3b6,vid:2qBlE2-WL60,st:0";
+    }, 2000);
+  }
   screenShake();
   if (vibeHype) {
     vibeHype.textContent = HYPE_MESSAGES[Math.floor(Math.random() * HYPE_MESSAGES.length)];
@@ -345,7 +349,7 @@ const TEEGIN_TERMINAL_LINES = [
   "> ACCESS GRANTED",
   "> LOADING TEEGIN.EXE",
   "> INJECTING VIBES...",
-  "> VIBES.EXE CORRUPTED (INTENTIONAL)",
+  "> VIBES.EXE CORRUPTED",
   "> MAXIMUM MODE ENGAGED",
   "> ERROR: TOO MUCH VIBE",
   "> DONE. HAVE A NICE DAY.",
@@ -395,7 +399,7 @@ function runTeeginSequence() {
 
   function typeNext() {
     if (lineIndex >= TEEGIN_TERMINAL_LINES.length) {
-      setTimeout(() => endSequence(), 800);
+      setTimeout(() => startShutdown(), 3000);
       return;
     }
     const line = TEEGIN_TERMINAL_LINES[lineIndex];
@@ -411,9 +415,17 @@ function runTeeginSequence() {
     }
   }
 
-  function endSequence() {
-    overlay.classList.add("glitch-overlay--out");
-    setTimeout(() => overlay.remove(), 1000);
+  function startShutdown() {
+    lineEl.textContent += "\n> SHUTTING DOWN...";
+    cursorEl.style.display = "none";
+    doStaticFlash();
+    setTimeout(() => {
+      overlay.classList.add("glitch-overlay--black");
+      setTimeout(() => {
+        overlay.classList.add("glitch-overlay--swirl");
+        setTimeout(() => overlay.remove(), 1600);
+      }, 3000);
+    }, 1800);
   }
 
   typeNext();
